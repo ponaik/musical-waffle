@@ -1,8 +1,15 @@
 package com.intern.javacore.analysis;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
-class Customer {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Customer {
     private String customerId;
     private String name;
     private String email;
