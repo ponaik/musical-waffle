@@ -65,6 +65,43 @@ public class AnalysisTest {
         assertEquals(4, mostPopularProduct.getValue());
     }
 
+    @Test
+    void testAverageCheckForSuccessfullyDeliveredOrders() {
+        Double averageCheck = orderList.stream()
+                .filter(order -> order.getStatus() == OrderStatus.DELIVERED)
+                .map(order -> order.getItems().stream()
+//                        .peek(item -> System.out.println("item " + item))
+                        .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                        .average()
+                        .orElse(0))
+//                .peek(e -> System.out.println(e))
+                .mapToDouble(Double::doubleValue)
+                .average()
+                .orElseThrow();
+
+        assertEquals(81.5575, averageCheck);
+    }
+
+    @Test
+    void testCustomersWithMoreThan5Orders() {
+        Map<Customer, Long> ordersPerCustomer = orderList.stream()
+                .collect(Collectors.groupingBy(
+                        Order::getCustomer,
+                        Collectors.counting()
+                ));
+
+        List<Customer> customersWithMoreThanFiveOrders = ordersPerCustomer.entrySet().stream()
+                .filter(entry -> entry.getValue() > 5)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        System.out.println(customersWithMoreThanFiveOrders);
+        assertEquals(1, customersWithMoreThanFiveOrders.size());
+        assertEquals("Alice Novak", customersWithMoreThanFiveOrders.getFirst().getName());
+
+    }
+
+
     private List<Order> getPopulatedList() {
         // Customers (using all-args constructors)
         Customer alice = new Customer(
