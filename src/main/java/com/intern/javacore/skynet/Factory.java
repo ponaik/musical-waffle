@@ -53,7 +53,9 @@ public class Factory {
             stock.put(pick, stock.get(pick) - 1);
             taken.put(pick, taken.get(pick) + 1);
             takenCount++;
+
         }
+        System.out.println("[Factory] Remaining total right after a take: " + totalStock());
         return taken;
     }
 

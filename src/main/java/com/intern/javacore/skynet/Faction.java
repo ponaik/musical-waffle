@@ -51,8 +51,8 @@ class Faction implements Runnable {
                 inventory.put(p, inventory.get(p) + t);
             }
         }
-        System.out.printf("[%s] Took parts: %s; Inventory now: %s; Factory remaining total: %d%n",
-                name, taken.toString(), inventory.toString(), factory.totalStock());
+        System.out.printf("[%s] Took parts: %s; Inventory now: %s%n",
+                name, taken.toString(), inventory.toString());
     }
 
     private void assembleRobots() {
