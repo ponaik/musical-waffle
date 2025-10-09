@@ -16,6 +16,7 @@ public class MiniApplicationContext {
             Set<Class<?>> componentClasses = scanPackageForComponents(basePackage);
             instantiateComponents(componentClasses);
             injectFields();
+            invokeInitializingBeans();
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize context for package: " + basePackage, e);
         }
@@ -87,6 +88,18 @@ public class MiniApplicationContext {
             throw new IllegalStateException("Multiple candidate beans for type: " + type);
         }
         return null;
+    }
+
+    private void invokeInitializingBeans() {
+        for (Object bean : beans.values()) {
+            if (bean instanceof InitializingBean) {
+                try {
+                    ((InitializingBean) bean).afterPropertiesSet();
+                } catch (Exception e) {
+                    throw new RuntimeException("Failed during afterPropertiesSet for bean: " + bean.getClass(), e);
+                }
+            }
+        }
     }
 
     private Set<Class<?>> scanPackageForComponents(String basePackage) throws IOException, ClassNotFoundException, URISyntaxException {
