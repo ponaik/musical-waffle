@@ -17,12 +17,10 @@ public class MyLinkedList<E> {
         size = 0;
     }
 
-    // returns the size of the list
     public int size() {
         return size;
     }
 
-    // adds the element in the beginning of the list
     public void addFirst(E el) {
         Node<E> n = new Node<>(el);
         n.next = head;
@@ -31,7 +29,6 @@ public class MyLinkedList<E> {
         size++;
     }
 
-    // adds the element in the end of the list
     public void addLast(E el) {
         Node<E> n = new Node<>(el);
         if (tail == null) {
@@ -43,7 +40,6 @@ public class MyLinkedList<E> {
         size++;
     }
 
-    // adds the element in the list by index
     public void add(int index, E el) {
         checkPositionIndex(index); // allow index == size for append
         if (index == 0) {
@@ -61,25 +57,21 @@ public class MyLinkedList<E> {
         size++;
     }
 
-    // returns the first element of the list
     public E getFirst() {
         ensureNotEmpty();
         return head.value;
     }
 
-    // returns the last element of the list
     public E getLast() {
         ensureNotEmpty();
         return tail.value;
     }
 
-    // returns the element by index
     public E get(int index) {
         checkElementIndex(index); // index must be 0..size-1
         return nodeAt(index).value;
     }
 
-    // retrieve and remove the first element of the list
     public E removeFirst() {
         ensureNotEmpty();
         E val = head.value;
@@ -89,7 +81,6 @@ public class MyLinkedList<E> {
         return val;
     }
 
-    // retrieve and remove the last element of the list
     public E removeLast() {
         ensureNotEmpty();
         if (size == 1) {
@@ -106,7 +97,6 @@ public class MyLinkedList<E> {
         return val;
     }
 
-    // retrieve and remove the element of the list by index
     public E remove(int index) {
         checkElementIndex(index);
         if (index == 0) return removeFirst();
@@ -151,25 +141,6 @@ public class MyLinkedList<E> {
         }
         sb.append("]");
         return sb.toString();
-    }
-
-    // Quick demonstration
-    public static void main(String[] args) {
-        MyLinkedList<Integer> list = new MyLinkedList<>();
-        list.addLast(1);
-        list.addLast(2);
-        list.addLast(3);
-        System.out.println(list);             // [1, 2, 3]
-        list.addFirst(0);
-        System.out.println(list.getFirst());  // 0
-        System.out.println(list.getLast());   // 3
-        list.add(2, 99);
-        System.out.println(list);             // [0, 1, 99, 2, 3]
-        System.out.println(list.remove(2));   // 99
-        System.out.println(list.removeFirst()); // 0
-        System.out.println(list.removeLast());  // 3
-        System.out.println(list.size());      // 2
-        System.out.println(list);             // [1, 2]
     }
 }
 
