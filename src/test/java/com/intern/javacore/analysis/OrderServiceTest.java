@@ -1,33 +1,28 @@
-import com.intern.javacore.analysis.*;
+package com.intern.javacore.analysis;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AnalysisTest {
-    private List<Order> orderList;
+public class OrderServiceTest {
+    private OrderService orderService;
 
     @BeforeEach
     void setUp() {
-        orderList = getPopulatedList();
+        orderService = new OrderService();
+        orderService.setOrderList(getPopulatedList());
     }
 
     @Test
     void testListOfUniqueCitiesWhereOrdersCameFrom() {
-        List<String> cities = orderList.stream()
-                .map(Order::getCustomer)
-                .map(Customer::getCity)
-                .distinct()
-                .toList(); // immutable list
+        List<String> cities = orderService.getListOfUniqueCitiesWhereOrdersCameFrom();
 
         assertEquals(2, cities.size());
         assertEquals("[Minsk, Brest]", cities.toString());
@@ -35,31 +30,14 @@ public class AnalysisTest {
 
     @Test
     void testTotalIncomeForAllCompletedOrders() {
-        Double totalIncome = orderList.stream()
-                .filter(order -> order.getStatus() == OrderStatus.DELIVERED)
-                .flatMap(order -> order.getItems().stream())
-                .map(item -> item.getPrice() * item.getQuantity())
-                .reduce(0.0, Double::sum);
+        Double totalIncome = orderService.getTotalIncomeForAllCompletedOrders();
 
         assertEquals(344.48, totalIncome);
     }
 
     @Test
     void testMostPopularProductBySales() {
-        Map<String, Long> productsBySales = orderList.stream()
-                .filter(order -> order.getStatus() != OrderStatus.CANCELLED)
-                .flatMap(order -> order.getItems().stream())
-                .collect(Collectors.groupingBy(
-                        OrderItem::getProductName,
-                        Collectors.summingLong(OrderItem::getQuantity) // Collectors.counting() to disregard quantity
-                ));
-
-        assertNotEquals(0, productsBySales.size());
-
-        Map.Entry<String, Long> mostPopularProduct =
-                productsBySales.entrySet().stream()
-                        .max(Map.Entry.comparingByValue())
-                        .orElseThrow();
+        Map.Entry<String, Long> mostPopularProduct = orderService.getMostPopularProductBySales();
 
         assertEquals("Mystery Novel", mostPopularProduct.getKey());
         assertEquals(4, mostPopularProduct.getValue());
@@ -67,38 +45,17 @@ public class AnalysisTest {
 
     @Test
     void testAverageCheckForSuccessfullyDeliveredOrders() {
-        Double averageCheck = orderList.stream()
-                .filter(order -> order.getStatus() == OrderStatus.DELIVERED)
-                .map(order -> order.getItems().stream()
-//                        .peek(item -> System.out.println("item " + item))
-                        .mapToDouble(item -> item.getPrice() * item.getQuantity())
-                        .average()
-                        .orElse(0))
-//                .peek(e -> System.out.println(e))
-                .mapToDouble(Double::doubleValue)
-                .average()
-                .orElseThrow();
+        Double averageCheck = orderService.getAverageCheckForSuccessfullyDeliveredOrders();
 
         assertEquals(81.5575, averageCheck);
     }
 
     @Test
     void testCustomersWithMoreThan5Orders() {
-        Map<Customer, Long> ordersPerCustomer = orderList.stream()
-                .collect(Collectors.groupingBy(
-                        Order::getCustomer,
-                        Collectors.counting()
-                ));
+        List<Customer> customersWithMoreThanFiveOrders = orderService.getCustomersWithMoreThan5Orders();
 
-        List<Customer> customersWithMoreThanFiveOrders = ordersPerCustomer.entrySet().stream()
-                .filter(entry -> entry.getValue() > 5)
-                .map(Map.Entry::getKey)
-                .toList();
-
-        System.out.println(customersWithMoreThanFiveOrders);
         assertEquals(1, customersWithMoreThanFiveOrders.size());
         assertEquals("Alice Novak", customersWithMoreThanFiveOrders.getFirst().getName());
-
     }
 
 
