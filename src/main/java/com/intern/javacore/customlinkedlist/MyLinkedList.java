@@ -1,4 +1,4 @@
-package com.intern.javacore.CustomLinkedList;
+package com.intern.javacore.customlinkedlist;
 
 public class MyLinkedList<E> {
     private static class Node<E> {

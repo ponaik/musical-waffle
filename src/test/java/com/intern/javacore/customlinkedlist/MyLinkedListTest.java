@@ -1,4 +1,5 @@
-import com.intern.javacore.CustomLinkedList.MyLinkedList;
+package com.intern.javacore.customlinkedlist;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
