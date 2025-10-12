@@ -1,4 +1,4 @@
-package com.intern.javacore;
+package com.intern.javacore.minispring;
 
 import com.intern.javacore.minispring.components.DummyPrototypeClass;
 import com.intern.javacore.minispring.framework.MiniApplicationContext;
